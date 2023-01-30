@@ -1,8 +1,6 @@
 package main
 
-
-
-bingDomains = map[string]string{
+var bingDomains = map[string]string{
 	"uk": "&cc=GB",
 	"us": "&cc=US",
 	"tr": "&cc=TR",
@@ -40,14 +38,14 @@ bingDomains = map[string]string{
 	"au": "&cc=AU",
 	"ar": "&cc=AR",
 }
-type SearchResult struct{
 
-	ResultRank int
-	ResultURL string 
+type SearchResult struct {
+	ResultRank  int
+	ResultURL   string
 	ResultTitle string
-	ResultDesc string
-
+	ResultDesc  string
 }
+
 var userAgents = []string{
 	"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36",
 	"Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36",
@@ -57,6 +55,21 @@ var userAgents = []string{
 	"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Safari/604.1.38",
 }
 
+func randomUserAgents() string {
+
+}
+func buildBingUrls() {
+
+}
+func scrapeClientRequest() {
+
+}
+func BingScrape() {
+
+}
+func bingResultParser() {
+
+}
 func main() {
 
 }
