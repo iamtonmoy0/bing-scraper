@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 var bingDomains = map[string]string{
 	"uk": "&cc=GB",
@@ -66,15 +69,35 @@ func buildBingUrls() {
 func scrapeClientRequest() {
 
 }
-func BingScrape(searchTerm, country string) ([]SearchResult, error) {
+func BingScrape(searchTerm, country string, pages, count, backoff int) ([]SearchResult, error) {
 	results := []SearchResult{}
+
+	bingPages, err := buildBingUrls(searchTerm, country, pages, count)
+	if err != nil {
+		return nil, err
+	}
+	for _, page := range buildPages {
+		rank := len(results)
+		res, err := scrapeClientRequest(page)
+		if err != nil {
+			return nil, err
+		}
+		data, err := bingResultParser(res, rank)
+		if err != nil {
+			return nil, err
+		}
+		for _, result := range data {
+			results = append(results, result)
+		}
+		time.Sleep(time.Duration(backoff) * time.Second)
+	}
 
 }
 func bingResultParser() {
 
 }
 func main() {
-	res, err := BingScrape("chat gpt", "com")
+	res, err := BingScrape("chat gpt", "com", 2, 30, 30)
 	if err == nil {
 		for _, res := range res {
 			fmt.Println(res)
