@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 var bingDomains = map[string]string{
 	"uk": "&cc=GB",
 	"us": "&cc=US",
@@ -64,12 +66,22 @@ func buildBingUrls() {
 func scrapeClientRequest() {
 
 }
-func BingScrape() {
+func BingScrape(searchTerm, country string) ([]SearchResult, error) {
+	results := []SearchResult{}
 
 }
 func bingResultParser() {
 
 }
 func main() {
+	res, err := BingScrape("chat gpt", "com")
+	if err == nil {
+		for _, res := range res {
+			fmt.Println(res)
+		}
+
+	} else {
+		fmt.Println(err)
+	}
 
 }
