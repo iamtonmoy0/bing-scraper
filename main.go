@@ -69,15 +69,26 @@ func buildBingUrls(searchTerm, country string, pages, count int) ([]string, erro
 	searchTerm = strings.Trim(searchTerm, " ")
 	searchTerm = strings.Replace(searchTerm, " ", "+", -1)
 	if countryCode,found:=bingDomains[country];found{
-		for i :=0,i<pages;i++{
+		for i :=0,i<pages; i++{
 			first:= firstParameter(i,count);
-                 scrapeURL:= fmt.Springf("https://bing/com/search?q=%s&first=%d&count=%d%s",searchsearchTerm,first,count,countrycountryCode)
+                
+			scrapeURL:= fmt.Springf("https://bing/com/search?q=%s&first=%d&count=%d%s",searchsearchTerm,first,count,countrycountryCode)
+			toScrape= append(toScrape,scrapeURL)
 		}
 	}else{
 		fmt.Errorf("count(%s) is currently not supported",country)
 		return nil,err
 	}
 	return toScrape,nil
+
+}
+func firstParameter(number,count int)int{
+	if number == 0{
+		return number +1
+	}
+	return number*count +1
+	 
+
 
 }
 func scrapeClientRequest() {
