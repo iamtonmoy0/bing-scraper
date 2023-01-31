@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -63,7 +64,20 @@ var userAgents = []string{
 func randomUserAgents() string {
 
 }
-func buildBingUrls() {
+func buildBingUrls(searchTerm, country string, pages, count int) ([]string, error) {
+	toScrape := []string{}
+	searchTerm = strings.Trim(searchTerm, " ")
+	searchTerm = strings.Replace(searchTerm, " ", "+", -1)
+	if countryCode,found:=bingDomains[country];found{
+		for i :=0,i<pages;i++{
+			first:= firstParameter(i,count);
+                 scrapeURL:= fmt.Springf("https://bing/com/search?q=%s&first=%d&count=%d%s",searchsearchTerm,first,count,countrycountryCode)
+		}
+	}else{
+		fmt.Errorf("count(%s) is currently not supported",country)
+		return nil,err
+	}
+	return toScrape,nil
 
 }
 func scrapeClientRequest() {
@@ -91,6 +105,7 @@ func BingScrape(searchTerm, country string, pages, count, backoff int) ([]Search
 		}
 		time.Sleep(time.Duration(backoff) * time.Second)
 	}
+	return results,nil
 
 }
 func bingResultParser() {
