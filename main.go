@@ -156,7 +156,30 @@ if err!= nil{
 	return nil,err
 }	
 results:= []SearchResult{}
-
+sel:= doc.Find("li.b_algo")
+rank++
+for i:= range sel.Nodes{
+	item:= sel.Eq(i)
+	LinkTag:=item.Find("a")
+	link, _:= linkTag.Attr("href")
+	titleTag:=item.Find("h2")
+	descTag:=desc.Text()
+	desc:=titleTag.Text()
+	title:=titleTag.Text()
+	link:=strings.Trim(link," ")
+	if link !=""&&link!= "#" && !strings.HasPrefix(link,"/"){
+		results:= SearchResult{
+			rank,
+			link,
+			title,
+			desc
+	}
+	results=append(results,results)
+	rank++
+	}
+	
+}
+return results, err
 
 
 
