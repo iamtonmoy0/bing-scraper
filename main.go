@@ -129,7 +129,7 @@ func BingScrape(searchTerm, country string, pages, count, backoff int) ([]Search
 	if err != nil {
 		return nil, err
 	}
-	for _, page := range buildPages {
+	for _, page := range bingPages {
 		rank := len(results)
 		res, err := scrapeClientRequest(page)
 		if err != nil {
@@ -166,7 +166,7 @@ func bingResultParser(response *http.Response, rank int) ([]SearchResult, error)
 		title := titleTag.Text()
 		link = strings.Trim(link, " ")
 		if link != "" && link != "#" && !strings.HasPrefix(link, "/") {
-			results := SearchResult{
+			result := SearchResult{
 				rank,
 				link,
 				title,
