@@ -181,7 +181,7 @@ func bingResultParser(response *http.Response, rank int) ([]SearchResult, error)
 
 }
 func main() {
-	res, err := BingScrape("chat gpt", "com", 2, 30, 30)
+	res, err := BingScrape("chat gpt", "com", 2, 15, 30)
 	if err == nil {
 		for _, res := range res {
 			fmt.Println(res)
