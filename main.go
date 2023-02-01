@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"net/http"
 	"net/url"
 	"strings"
@@ -64,6 +65,9 @@ var userAgents = []string{
 }
 
 func randomUserAgents() string {
+	rand.Seed(time.Now().Unix())
+	randNum:= rand.Int()%len(userAgents)
+	return userAgents[randNum]
 
 }
 func buildBingUrls(searchTerm, country string, pages, count int) ([]string, error) {
@@ -106,6 +110,16 @@ func scrapeClientRequest(searchURL string,proxyString interface{}) (*http.Respon
 
 	baseClient := getScapeClient(proxyString)
 	req, _:= http.NewRequest("GET",searchURL,nil)
+	req.Header.Set("User-Agent",randomUserAgents())
+	res,err:=baseClient.Do(req)
+	if res.StatusCode!=200{
+		err:fmt.Errorf("scraper received a non-200 status code suggesting a ban")
+
+	}
+	if err != nil{
+		return nil ,err
+	}
+	return res,nil
 
 }
 func BingScrape(searchTerm, country string, pages, count, backoff int) ([]SearchResult, error) {
