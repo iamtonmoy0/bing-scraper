@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+	"net/url"
 	"strings"
 	"time"
 )
@@ -91,7 +93,19 @@ func firstParameter(number,count int)int{
 
 
 }
-func scrapeClientRequest() {
+func getScrapeClient(proxyString interface{})*http.Client{
+	switch v:= proxyString.(type){
+	case string:
+		proxyString,_:= url.Parse(v)
+		return &http.Client{Transport:&http.Transport{proxy:http.proxyURL(proxyUrl)}}
+	default:
+		return &http.Client{}
+	}
+}
+func scrapeClientRequest(searchURL string,proxyString interface{}) (*http.Response,error){
+
+	baseClient := getScapeClient(proxyString)
+	req,_:= http.NewRequest("GET",searchURL,nil)
 
 }
 func BingScrape(searchTerm, country string, pages, count, backoff int) ([]SearchResult, error) {
