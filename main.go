@@ -80,11 +80,11 @@ func buildBingUrls(searchTerm, country string, pages, count int) ([]string, erro
 		for i := 0; i < pages; i++ {
 			first := firstParameter(i, count)
 
-			scrapeURL := fmt.Springf("https://bing/com/search?q=%s&first=%d&count=%d%s", searchsearchTerm, first, count, countrycountryCode)
+			scrapeURL := fmt.Sprintf("https://bing/com/search?q=%s&first=%d&count=%d%s", searchsearchTerm, first, count, countrycountryCode)
 			toScrape = append(toScrape, scrapeURL)
 		}
 	} else {
-		fmt.Errorf("count(%s) is currently not supported", country)
+		err := fmt.Errorf("count(%s) is currently not supported", country)
 		return nil, err
 	}
 	return toScrape, nil
@@ -100,8 +100,8 @@ func firstParameter(number, count int) int {
 func getScrapeClient(proxyString interface{}) *http.Client {
 	switch v := proxyString.(type) {
 	case string:
-		proxyString, _ := url.Parse(v)
-		return &http.Client{Transport: &http.Transport{proxy: http.proxyURL(proxyUrl)}}
+		proxyUrl, _ := url.Parse(v)
+		return &http.Client{Transport: &http.Transport{Proxy: http.proxyURL(proxyUrl)}}
 	default:
 		return &http.Client{}
 	}
@@ -114,7 +114,7 @@ func scrapeClientRequest(searchURL string, proxyString interface{}) (*http.Respo
 	res, err := baseClient.Do(req)
 	if res.StatusCode != 200 {
 		err := fmt.Errorf("scraper received a non-200 status code suggesting a ban")
-
+		return nil, err
 	}
 	if err != nil {
 		return nil, err
@@ -158,13 +158,13 @@ func bingResultParser(response *http.Response, rank int) ([]SearchResult, error)
 	rank++
 	for i := range sel.Nodes {
 		item := sel.Eq(i)
-		LinkTag := item.Find("a")
+		linkTag := item.Find("a")
 		link, _ := linkTag.Attr("href")
 		titleTag := item.Find("h2")
-		descTag := desc.Text()
-		desc := titleTag.Text()
+		descTag := item.Find("div.b_caption p")
+		desc := descTag.Text()
 		title := titleTag.Text()
-		link := strings.Trim(link, " ")
+		link = strings.Trim(link, " ")
 		if link != "" && link != "#" && !strings.HasPrefix(link, "/") {
 			results := SearchResult{
 				rank,
@@ -172,7 +172,7 @@ func bingResultParser(response *http.Response, rank int) ([]SearchResult, error)
 				title,
 				desc,
 			}
-			results = append(results, results)
+			results = append(results, result)
 			rank++
 		}
 
