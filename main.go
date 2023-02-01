@@ -68,7 +68,7 @@ var userAgents = []string{
 
 func randomUserAgents() string {
 	rand.Seed(time.Now().Unix())
-	randNum:= rand.Int()%len(userAgents)
+	randNum := rand.Int() % len(userAgents)
 	return userAgents[randNum]
 
 }
@@ -76,52 +76,50 @@ func buildBingUrls(searchTerm, country string, pages, count int) ([]string, erro
 	toScrape := []string{}
 	searchTerm = strings.Trim(searchTerm, " ")
 	searchTerm = strings.Replace(searchTerm, " ", "+", -1)
-	if countryCode,found:=bingDomains[country];found{
-		for i :=0,i<pages; i++{
-			first:= firstParameter(i,count);
-                
-			scrapeURL:= fmt.Springf("https://bing/com/search?q=%s&first=%d&count=%d%s",searchsearchTerm,first,count,countrycountryCode)
-			toScrape= append(toScrape,scrapeURL)
+	if countryCode, found := bingDomains[country]; found {
+		for i := 0; i < pages; i++ {
+			first := firstParameter(i, count)
+
+			scrapeURL := fmt.Springf("https://bing/com/search?q=%s&first=%d&count=%d%s", searchsearchTerm, first, count, countrycountryCode)
+			toScrape = append(toScrape, scrapeURL)
 		}
-	}else{
-		fmt.Errorf("count(%s) is currently not supported",country)
-		return nil,err
+	} else {
+		fmt.Errorf("count(%s) is currently not supported", country)
+		return nil, err
 	}
-	return toScrape,nil
+	return toScrape, nil
 
 }
-func firstParameter(number,count int)int{
-	if number == 0{
-		return number +1
+func firstParameter(number, count int) int {
+	if number == 0 {
+		return number + 1
 	}
-	return number*count +1
-	 
-
+	return number*count + 1
 
 }
-func getScrapeClient(proxyString interface{})*http.Client{
-	switch v:= proxyString.(type){
+func getScrapeClient(proxyString interface{}) *http.Client {
+	switch v := proxyString.(type) {
 	case string:
-		proxyString,_:= url.Parse(v)
-		return &http.Client{Transport:&http.Transport{proxy:http.proxyURL(proxyUrl)}}
+		proxyString, _ := url.Parse(v)
+		return &http.Client{Transport: &http.Transport{proxy: http.proxyURL(proxyUrl)}}
 	default:
 		return &http.Client{}
 	}
 }
-func scrapeClientRequest(searchURL string,proxyString interface{}) (*http.Response,error){
+func scrapeClientRequest(searchURL string, proxyString interface{}) (*http.Response, error) {
 
 	baseClient := getScapeClient(proxyString)
-	req, _:= http.NewRequest("GET",searchURL,nil)
-	req.Header.Set("User-Agent",randomUserAgents())
-	res,err:=baseClient.Do(req)
-	if res.StatusCode!=200{
-		err:fmt.Errorf("scraper received a non-200 status code suggesting a ban")
+	req, _ := http.NewRequest("GET", searchURL, nil)
+	req.Header.Set("User-Agent", randomUserAgents())
+	res, err := baseClient.Do(req)
+	if res.StatusCode != 200 {
+		err := fmt.Errorf("scraper received a non-200 status code suggesting a ban")
 
 	}
-	if err != nil{
-		return nil ,err
+	if err != nil {
+		return nil, err
 	}
-	return res,nil
+	return res, nil
 
 }
 func BingScrape(searchTerm, country string, pages, count, backoff int) ([]SearchResult, error) {
@@ -146,42 +144,40 @@ func BingScrape(searchTerm, country string, pages, count, backoff int) ([]Search
 		}
 		time.Sleep(time.Duration(backoff) * time.Second)
 	}
-	return results,nil
+	return results, nil
 
 }
-func bingResultParser(response *http.Response,rank int)([]SearchResult,error) {
+func bingResultParser(response *http.Response, rank int) ([]SearchResult, error) {
 
-doc,err:=goquery.NewDocumentFromResponse(response)
-if err!= nil{
-	return nil,err
-}	
-results:= []SearchResult{}
-sel:= doc.Find("li.b_algo")
-rank++
-for i:= range sel.Nodes{
-	item:= sel.Eq(i)
-	LinkTag:=item.Find("a")
-	link, _:= linkTag.Attr("href")
-	titleTag:=item.Find("h2")
-	descTag:=desc.Text()
-	desc:=titleTag.Text()
-	title:=titleTag.Text()
-	link:=strings.Trim(link," ")
-	if link !=""&&link!= "#" && !strings.HasPrefix(link,"/"){
-		results:= SearchResult{
-			rank,
-			link,
-			title,
-			desc
+	doc, err := goquery.NewDocumentFromResponse(response)
+	if err != nil {
+		return nil, err
 	}
-	results=append(results,results)
+	results := []SearchResult{}
+	sel := doc.Find("li.b_algo")
 	rank++
+	for i := range sel.Nodes {
+		item := sel.Eq(i)
+		LinkTag := item.Find("a")
+		link, _ := linkTag.Attr("href")
+		titleTag := item.Find("h2")
+		descTag := desc.Text()
+		desc := titleTag.Text()
+		title := titleTag.Text()
+		link := strings.Trim(link, " ")
+		if link != "" && link != "#" && !strings.HasPrefix(link, "/") {
+			results := SearchResult{
+				rank,
+				link,
+				title,
+				desc,
+			}
+			results = append(results, results)
+			rank++
+		}
+
 	}
-	
-}
-return results, err
-
-
+	return results, err
 
 }
 func main() {
