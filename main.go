@@ -7,6 +7,8 @@ import (
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/PuerkitoBio/goquery"
 )
 
 var bingDomains = map[string]string{
@@ -147,7 +149,16 @@ func BingScrape(searchTerm, country string, pages, count, backoff int) ([]Search
 	return results,nil
 
 }
-func bingResultParser() {
+func bingResultParser(response *http.Response,rank int)([]SearchResult,error) {
+
+doc,err:=goquery.NewDocumentFromResponse(response)
+if err!= nil{
+	return nil,err
+}	
+results:= []SearchResult{}
+
+
+
 
 }
 func main() {
